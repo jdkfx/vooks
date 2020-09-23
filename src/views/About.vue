@@ -1,5 +1,8 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <v-container>
+    <div>
+      <h1>このWEBアプリについて</h1>
+      <p>読みたい本、読んだ本を可視化するWEBアプリケーションです。</p>
+    </div>
+  </v-container>
 </template>
