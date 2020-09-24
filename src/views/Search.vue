@@ -8,7 +8,7 @@
         </div>
 
         <div>
-          <v-text-field v-model="search_form['keyword']" placeholder="書籍を検索" />
+          <v-text-field v-on:change="OnSearch(search_form['keyword'])" v-model="search_form['keyword']" placeholder="書籍を検索" />
         </div>
 
         <div>
@@ -55,7 +55,20 @@ export default {
         this.items = response.data.Items;
       })
     }
-  }
+  },
+
+  watch: {
+    search_form: {
+      handler: function() {
+        this.OnSearch(true);
+      },
+      deep: true,
+    },
+  },
+
+  mounted: function() {
+    this.OnSearch(true);
+  },
 };
 
 </script>
