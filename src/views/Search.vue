@@ -8,11 +8,11 @@
         </div>
 
         <div>
-          <v-text-field v-on:change="OnSearch(search_form['keyword'])" v-model="search_form['keyword']" placeholder="書籍を検索" />
+          <v-text-field v-on:change="OnSearchByKeyword(search_form['keyword'])" v-model="search_form['keyword']" placeholder="書籍を検索" />
         </div>
 
         <div>
-          <v-btn v-on:click="OnSearch(search_form['keyword'])">検索</v-btn>
+          <v-text-field v-on:change="OnSearchByAuthor(search_form['author'])" v-model="search_form['author']" placeholder="著者を検索" />
         </div>
 
         <div v-if="items !== null">
@@ -42,15 +42,24 @@ export default {
     return {
       search_form: {
         keyword: "",
+        author: "",
       },
       items: "",
     }
   },
 
   methods: {
-    OnSearch: async function(keyword) {
+    OnSearchByKeyword: async function(keyword) {
       const getUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}&title=${keyword}`
-      this.$axios.get(getUrl).then(response => {
+      await this.$axios.get(getUrl).then(response => {
+        console.log(response.data);
+        this.items = response.data.Items;
+      })
+    },
+
+    OnSearchByAuthor: async function(author) {
+      const getUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}&author=${author}`
+      await this.$axios.get(getUrl).then(response => {
         console.log(response.data);
         this.items = response.data.Items;
       })
@@ -60,14 +69,16 @@ export default {
   watch: {
     search_form: {
       handler: function() {
-        this.OnSearch(true);
+        this.OnSearchByKeyword(true);
+        this.OnSearchByAuthor(true);
       },
       deep: true,
     },
   },
 
   mounted: function() {
-    this.OnSearch(true);
+    this.OnSearchByKeyword(true);
+    this.OnSearchByAuthor(true);
   },
 };
 
