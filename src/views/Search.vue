@@ -8,11 +8,15 @@
         </div>
 
         <div>
-          <v-text-field v-on:change="OnSearchByKeyword(search_form['keyword'])" v-model="search_form['keyword']" placeholder="書籍を検索" />
+          <v-text-field v-on:change="searchByKeyword(keyword)" v-model="keyword" placeholder="書籍を検索" />
         </div>
 
         <div>
-          <v-text-field v-on:change="OnSearchByAuthor(search_form['author'])" v-model="search_form['author']" placeholder="著者を検索" />
+          <v-text-field v-on:change="searchByAuthor(author)" v-model="author" placeholder="著者を検索" />
+        </div>
+
+        <div>
+          <v-btn v-on:click="search(keyword, author)">検索</v-btn>
         </div>
 
         <div v-if="items !== null">
@@ -33,6 +37,12 @@
 
 <script>
 
+const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}`;
+
+// 検索クエリの作成
+const queryBuilder = (query) =>
+  Object.entries(query).map(([key, value]) => `${key}=${value}`).join("&");
+
 export default {
   name: "Search",
 
@@ -40,45 +50,52 @@ export default {
 
   data() {
     return {
-      search_form: {
-        keyword: "",
-        author: "",
-      },
+      keyword: "",
+      author: "",
       items: "",
     }
   },
 
   methods: {
-    OnSearchByKeyword: async function(keyword) {
-      const getUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}&title=${keyword}`
-      await this.$axios.get(getUrl).then(response => {
-        console.log(response.data);
-        this.items = response.data.Items;
-      })
+    // 検索APIへのアクセス
+    callSearchAPI(query) {
+      const getURL = `${baseURL}&${queryBuilder(query)}`;
+      return this.$axios.get(getURL);
     },
 
-    OnSearchByAuthor: async function(author) {
-      const getUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}&author=${author}`
-      await this.$axios.get(getUrl).then(response => {
-        console.log(response.data);
-        this.items = response.data.Items;
-      })
-    }
+    // キーワードを検索
+    async searchByKeyword() {
+      const { data } = await this.callSearchAPI({ title: this.keyword });
+      this.items = data.Items;
+    },
+
+    // 著者で検索
+    async searchByAuthor() {
+      const { data } = await this.callSearchAPI({ author: this.author });
+      this.items = data.Items;
+    },
+
+    // キーワード、著者で検索
+    async search() {
+      const { data } = await this.callSearchAPI({
+        title: this.keyword,
+        author: this.author
+      });
+      this.items = data.Items;
+    },
   },
 
   watch: {
-    search_form: {
-      handler: function() {
-        this.OnSearchByKeyword(true);
-        this.OnSearchByAuthor(true);
-      },
-      deep: true,
+    handler: function () {
+      this.searchByKeyword(true);
+      this.searchByAuthor(true);
     },
+    deep: true,
   },
 
   mounted: function() {
-    this.OnSearchByKeyword(true);
-    this.OnSearchByAuthor(true);
+    const { data } = this.callSearchAPI();
+    this.items = data.Items;
   },
 };
 
