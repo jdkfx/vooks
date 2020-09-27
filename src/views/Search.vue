@@ -41,7 +41,7 @@ const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/2017040
 
 // 検索クエリの作成
 const queryBuilder = (query) =>
-  Object.entries(query).map(([key, value]) => `${key}=${value}`).join("&");
+  Object.entries(query || {}).map(([key, value]) => `${key}=${value}`).join("&");
 
 export default {
   name: "Search",
