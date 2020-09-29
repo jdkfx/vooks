@@ -1,39 +1,45 @@
 <template>
   <v-app>
-    <v-app-bar app color="#FF9800" dark>
-      <div class="d-flex align-center">
-        <h2>書籍リスト</h2>
-      </div>
+    <header>
+      <v-app-bar app color="#FF9800" dark>
+        <v-app-bar-nav-icon v-on:click="drawer = true"></v-app-bar-nav-icon>
+        <v-toolbar-title class="d-flex align-center">
+          <h2>書籍リスト</h2>
+        </v-toolbar-title>
+      </v-app-bar>
 
-      <v-spacer></v-spacer>
+      <v-navigation-drawer v-model="drawer" fixed temporary>
+        <v-list nav dense>
+          <v-list-item-group>
+            <v-list-item v-for="(linkItem, index) in linkItems" :key="index" :href="linkItem.url">
+              <v-list-item-title>{{ linkItem.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-navigation-drawer>
+    </header>
 
-      <v-toolbar-items>
-        <v-btn flat color="#FF9800" depressed to="/">ホーム</v-btn>
-        <v-btn flat color="#FF9800" depressed to="/search">検索</v-btn>
-        <v-btn flat color="#FF9800" depressed to="/about">このサイトについて</v-btn>
-      </v-toolbar-items>
-    </v-app-bar>
-
-    <v-main>
-      <v-content>
-        <router-view />
-      </v-content>
-    </v-main>
+    <body>
+      <v-main>
+        <v-content>
+          <router-view />
+        </v-content>
+      </v-main>
+    </body>
   </v-app>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
+import links from './common/links';
 
 export default {
   name: 'App',
 
-  components: {
-    // HelloWorld,
-  },
+  components: {},
 
   data: () => ({
-    //
+    drawer: false,
+    linkItems: links.linkItems,
   }),
 };
 </script>
