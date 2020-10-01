@@ -11,6 +11,10 @@ export default {
     {
       name: 'このサイトについて',
       url: '/about',
-    }
+    },
+    {
+      name: 'サインイン',
+      url: '/signin',
+    },
   ]
 }
