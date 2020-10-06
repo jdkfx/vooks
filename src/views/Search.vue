@@ -27,6 +27,7 @@
             <p>{{ item.Item.itemCaption }}</p>
             <p>ISBN：{{ item.Item.isbn }}</p>
             <p>出版社：{{ item.Item.publisherName }}</p>
+            <wish-button v-bind:item="title"></wish-button>
           </ul>
         </div>
 
@@ -36,6 +37,7 @@
 </template>
 
 <script>
+import WishButton from "../components/WishButton";
 
 const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}`;
 
@@ -46,13 +48,16 @@ const queryBuilder = (query) =>
 export default {
   name: "Search",
 
-  components: {},
+  components: {
+    "wish-button": WishButton,
+  },
 
   data() {
     return {
       keyword: "",
       author: "",
       items: "",
+      title: "タイトル",
     }
   },
 
@@ -93,10 +98,10 @@ export default {
     deep: true,
   },
 
-  mounted: function() {
-    const { data } = this.callSearchAPI();
-    this.items = data.Items;
-  },
+  // mounted: function() {
+  //   const { data } = this.callSearchAPI();
+  //   this.items = data.Items;
+  // },
 };
 
 </script>
