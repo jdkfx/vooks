@@ -27,7 +27,14 @@
             <p>{{ item.Item.itemCaption }}</p>
             <p>ISBN：{{ item.Item.isbn }}</p>
             <p>出版社：{{ item.Item.publisherName }}</p>
-            <wish-button v-bind:item="title"></wish-button>
+
+            <wish-button v-on:wish-button="clickWishButton(item.Item)"></wish-button>
+            <v-dialog v-model="wishDialog" max-width="300">
+              <v-card>
+                <v-card-text>「{{ wishTitle }}」が読みたい本のリストに追加されました</v-card-text>
+              </v-card>
+            </v-dialog>
+
           </ul>
         </div>
 
@@ -57,7 +64,8 @@ export default {
       keyword: "",
       author: "",
       items: "",
-      title: "タイトル",
+      wishDialog: false,
+      wishTitle: "",
     }
   },
 
@@ -88,6 +96,11 @@ export default {
       });
       this.items = data.Items;
     },
+
+    async clickWishButton(item) {
+      this.wishTitle = item.title;
+      return this.wishDialog = true;
+    }
   },
 
   watch: {
