@@ -15,8 +15,8 @@
           <v-text-field v-on:change="searchByAuthor(author)" v-model="author" placeholder="著者を検索" />
         </div>
 
-        <div>
-          <v-btn v-on:click="search(keyword, author)">検索</v-btn>
+        <div class="mb-5">
+          <v-btn color="green" v-on:click="search(keyword, author)">検索</v-btn>
         </div>
 
         <div v-if="items !== null">
@@ -35,6 +35,13 @@
               </v-card>
             </v-dialog>
 
+            <done-button v-on:done-button="clickDoneButton(item.Item)"></done-button>
+            <v-dialog v-model="doneDialog" max-width="300">
+              <v-card>
+                <v-card-text>「{{ doneTitle }}」が読了リストに追加されました</v-card-text>
+              </v-card>
+            </v-dialog>
+
           </ul>
         </div>
 
@@ -45,6 +52,7 @@
 
 <script>
 import WishButton from "../components/WishButton";
+import DoneButton from "../components/DoneButton";
 
 const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}`;
 
@@ -57,6 +65,7 @@ export default {
 
   components: {
     "wish-button": WishButton,
+    "done-button": DoneButton,
   },
 
   data() {
@@ -66,6 +75,8 @@ export default {
       items: "",
       wishDialog: false,
       wishTitle: "",
+      doneDialog: false,
+      doneTitle: "",
     }
   },
 
@@ -97,10 +108,17 @@ export default {
       this.items = data.Items;
     },
 
+    // 読みたい本のリストに追加
     async clickWishButton(item) {
       this.wishTitle = item.title;
       return this.wishDialog = true;
-    }
+    },
+
+    // 読了した本のリストに追加
+    async clickDoneButton(item) {
+      this.doneTitle = item.title;
+      return this.doneDialog = true;
+    },
   },
 
   watch: {

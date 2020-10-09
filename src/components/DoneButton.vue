@@ -1,13 +1,13 @@
 <template>
   <v-container fluid>
-    <v-btn color="blue" v-on:click="addWishList()">読みたいリストに追加</v-btn>
+    <v-btn color="orange" v-on:click="addDoneList()">読了リストに追加</v-btn>
   </v-container>
 </template>
 
 <script lang="js">
 
 export default {
-  name: "WishButton",
+  name: "DoneButton",
 
   components: {},
 
@@ -16,8 +16,8 @@ export default {
   },
 
   methods: {
-    async addWishList(){
-      this.$emit('wish-button');
+    async addDoneList(){
+      this.$emit('done-button');
     }
   },
 }
