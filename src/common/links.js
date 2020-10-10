@@ -16,5 +16,9 @@ export default {
       name: 'サインイン',
       url: '/signin',
     },
+    {
+      name: 'サインアウト',
+      url: '/signout',
+    },
   ]
 }

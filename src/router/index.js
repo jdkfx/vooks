@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import Search from '../views/Search.vue'
 import Signin from '../views/Signin.vue'
+import Signout from '../views/Signout.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/signin',
     name: 'Signin',
     component: Signin
+  },
+  {
+    path: '/signout',
+    name: 'Signout',
+    component: Signout
   },
 ]
 
