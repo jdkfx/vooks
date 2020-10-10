@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import WishButton from "../components/WishButton";
 import DoneButton from "../components/DoneButton";
 
@@ -110,6 +111,13 @@ export default {
 
     // 読みたい本のリストに追加
     async clickWishButton(item) {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if(user) {
+          console.log(user.uid);
+        } else {
+          console.log("ログインしていません");
+        }
+      })
       this.wishTitle = item.title;
       return this.wishDialog = true;
     },
