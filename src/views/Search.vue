@@ -28,12 +28,7 @@
             <p>ISBN：{{ item.Item.isbn }}</p>
             <p>出版社：{{ item.Item.publisherName }}</p>
 
-            <wish-button v-on:wish-button="clickWishButton(item.Item)"></wish-button>
-            <v-dialog v-model="wishDialog" max-width="300">
-              <v-card>
-                <v-card-text>「{{ wishTitle }}」が読みたい本のリストに追加されました</v-card-text>
-              </v-card>
-            </v-dialog>
+            <wish-button v-on:wish-button="clickWishButton(item.Item)" v-bind:toPropsTitle="propsTitle"></wish-button>
 
             <done-button v-on:done-button="clickDoneButton(item.Item)"></done-button>
             <v-dialog v-model="doneDialog" max-width="300">
@@ -74,8 +69,7 @@ export default {
       keyword: "",
       author: "",
       items: "",
-      wishDialog: false,
-      wishTitle: "",
+      propsTitle: "",
       doneDialog: false,
       doneTitle: "",
     }
@@ -111,15 +105,15 @@ export default {
 
     // 読みたい本のリストに追加
     async clickWishButton(item) {
+      let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if(user) {
           console.log(user.uid);
+          self.propsTitle = item.title;
         } else {
-          console.log("ログインしていません");
+          alert("サインインしてください");
         }
       })
-      this.wishTitle = item.title;
-      return this.wishDialog = true;
     },
 
     // 読了した本のリストに追加
