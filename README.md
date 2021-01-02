@@ -1,4 +1,4 @@
-# list-of-books
+# vooks
 
 ## About
 読みたい本、読んだ本を可視化するWEBアプリケーション
