@@ -28,7 +28,7 @@
             <p>ISBN：{{ item.Item.isbn }}</p>
             <p>出版社：{{ item.Item.publisherName }}</p>
 
-            <wish-button v-on:wish-button="clickWishButton(item.Item)" v-bind:toPropsTitle="propsTitle"></wish-button>
+            <wish-button v-on:wish-button="clickWishButton(item.Item)" v-bind:toPropsTitle="item.Item.title"></wish-button>
 
             <done-button v-on:done-button="clickDoneButton(item.Item)"></done-button>
             <v-dialog v-model="doneDialog" max-width="300">
