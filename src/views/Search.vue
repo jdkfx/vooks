@@ -106,14 +106,13 @@ export default {
     // 読みたい本のリストに追加
     async clickWishButton(item) {
       let self = this;
-      firebase.auth().onAuthStateChanged(function(user) {
-        if(user) {
-          console.log(user.uid);
-          self.propsTitle = item.title;
-        } else {
-          alert("サインインしてください");
-        }
-      })
+      let user = firebase.auth().currentUser; 
+      if(user) {
+        console.log(user.uid);
+        self.propsTitle = item.title;
+      } else {
+        alert("サインインしてください");
+      }
     },
 
     // 読了した本のリストに追加
