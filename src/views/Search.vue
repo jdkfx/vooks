@@ -49,6 +49,7 @@
 import firebase from 'firebase';
 import WishButton from "../components/WishButton";
 import DoneButton from "../components/DoneButton";
+import { db } from '../plugins/firebase';
 
 const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}`;
 
@@ -110,6 +111,17 @@ export default {
       if(user) {
         console.log(user.uid);
         self.propsTitle = item.title;
+
+        db.collection("users").doc(user.uid).collection("wishLists").add({
+          bookName: item.title,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(function() {
+          console.log("Document successfully written!");
+        })
+        .catch(function(error) {
+          console.log("Error writing document: ", error);
+        });
       } else {
         alert("サインインしてください");
       }
