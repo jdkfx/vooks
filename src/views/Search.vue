@@ -107,20 +107,37 @@ export default {
     // 読みたい本のリストに追加
     async clickWishButton(item) {
       let self = this;
-      let user = firebase.auth().currentUser; 
+      let user = firebase.auth().currentUser;
+      let colRef = db.collection("users").doc(user.uid).collection("wishLists");
       if(user) {
         console.log(user.uid);
         self.propsTitle = item.title;
 
-        db.collection("users").doc(user.uid).collection("wishLists").add({
-          bookName: item.title,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then(function() {
-          console.log("Document successfully written!");
+        colRef.where("isbn", "==", item.isbn)
+        .get().then(function(querySnapshot) {
+          if(querySnapshot.empty) {
+            colRef.add({
+              imageUrl: item.largeImageUrl,
+              title: item.title,
+              author: item.author,
+              isbn: item.isbn,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(function(docRef) {
+              console.log("Document ID:", docRef.id, "successfully written!");
+              colRef.doc(docRef.id).update({
+                docId: docRef.id,
+              })
+            })
+            .catch(function(error) {
+              console.log("Error writing document: ", error);
+            });
+          } else {
+            console.log("Document can't written!");
+          }
         })
         .catch(function(error) {
-          console.log("Error writing document: ", error);
+          console.log("Error getting documents: ", error);
         });
       } else {
         alert("サインインしてください");
