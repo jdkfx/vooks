@@ -34,12 +34,11 @@
               v-bind:toPropsWishFlag="propsWishFlag"
             ></wish-button>
 
-            <done-button v-on:done-button="clickDoneButton(item.Item)"></done-button>
-            <v-dialog v-model="doneDialog" max-width="300">
-              <v-card>
-                <v-card-text>「{{ doneTitle }}」が読了リストに追加されました</v-card-text>
-              </v-card>
-            </v-dialog>
+            <done-button
+              v-on:done-button="clickDoneButton(item.Item)"
+              v-bind:toPropsTitle="item.Item.title"
+              v-bind:toPropsDoneFlag="propsDoneFlag"
+            ></done-button>
 
           </ul>
         </div>
@@ -76,8 +75,7 @@ export default {
       items: "",
       propsTitle: "",
       propsWishFlag: '',
-      doneDialog: false,
-      doneTitle: "",
+      propsDoneFlag: '',
     }
   },
 
@@ -153,8 +151,44 @@ export default {
 
     // 読了した本のリストに追加
     async clickDoneButton(item) {
-      this.doneTitle = item.title;
-      return this.doneDialog = true;
+      let self = this;
+      let user = firebase.auth().currentUser;
+      let colRef = db.collection("users").doc(user.uid).collection("doneLists");
+      if(user) {
+        console.log(user.uid);
+        self.propsTitle = item.title;
+
+        colRef.where("isbn", "==", item.isbn)
+        .get().then(function(querySnapshot) {
+          if(querySnapshot.empty) {
+            self.propsDoneFlag = true;
+            colRef.add({
+              imageUrl: item.largeImageUrl,
+              title: item.title,
+              author: item.author,
+              isbn: item.isbn,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(function(docRef) {
+              console.log("Document ID:", docRef.id, "successfully written!");
+              colRef.doc(docRef.id).update({
+                docId: docRef.id,
+              })
+            })
+            .catch(function(error) {
+              console.log("Error writing document: ", error);
+            });
+          } else {
+            self.propsDoneFlag = false;
+            console.log("Document can't written!");
+          }
+        })
+        .catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+      } else {
+        alert("サインインしてください");
+      }
     },
   },
 
