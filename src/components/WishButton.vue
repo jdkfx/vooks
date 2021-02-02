@@ -10,7 +10,8 @@
   </v-container>
 </template>
 
-<script lang="js">
+<script>
+import firebase from 'firebase';
 
 export default {
   name: "WishButton",
@@ -27,8 +28,14 @@ export default {
 
   methods: {
     async addWishList() {
-      this.$emit('wish-button');
-      return this.wishDialog = true;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if(user) {
+          this.$emit('wish-button');
+          return this.wishDialog = true;
+        } else {
+          alert("サインインしてください");
+        }
+      });
     },
   },
 }

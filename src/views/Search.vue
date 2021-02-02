@@ -109,86 +109,88 @@ export default {
 
     // 読みたい本のリストに追加
     async clickWishButton(item) {
-      let self = this;
-      let user = firebase.auth().currentUser;
-      let colRef = db.collection("users").doc(user.uid).collection("wishLists");
-      if(user) {
-        console.log(user.uid);
-        self.propsTitle = item.title;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          let self = this;
+          let colRef = db.collection("users").doc(user.uid).collection("wishLists");
+          if(user) {
+            console.log(user.uid);
+            self.propsTitle = item.title;
 
-        colRef.where("isbn", "==", item.isbn)
-        .get().then(function(querySnapshot) {
-          if(querySnapshot.empty) {
-            self.propsWishFlag = true;
-            colRef.add({
-              imageUrl: item.largeImageUrl,
-              title: item.title,
-              author: item.author,
-              isbn: item.isbn,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(function(docRef) {
-              console.log("Document ID:", docRef.id, "successfully written!");
-              colRef.doc(docRef.id).update({
-                docId: docRef.id,
-              })
+            colRef.where("isbn", "==", item.isbn)
+            .get().then(function(querySnapshot) {
+              if(querySnapshot.empty) {
+                self.propsWishFlag = true;
+                colRef.add({
+                  imageUrl: item.largeImageUrl,
+                  title: item.title,
+                  author: item.author,
+                  isbn: item.isbn,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(function(docRef) {
+                  console.log("Document ID:", docRef.id, "successfully written!");
+                  colRef.doc(docRef.id).update({
+                    docId: docRef.id,
+                  })
+                })
+                .catch(function(error) {
+                  console.log("Error writing document: ", error);
+                });
+              } else {
+                self.propsWishFlag = false;
+                console.log("Document can't written!");
+              }
             })
             .catch(function(error) {
-              console.log("Error writing document: ", error);
+              console.log("Error getting documents: ", error);
             });
-          } else {
-            self.propsWishFlag = false;
-            console.log("Document can't written!");
           }
-        })
-        .catch(function(error) {
-          console.log("Error getting documents: ", error);
-        });
-      } else {
-        alert("サインインしてください");
-      }
+        }
+      });
     },
 
     // 読了した本のリストに追加
     async clickDoneButton(item) {
-      let self = this;
-      let user = firebase.auth().currentUser;
-      let colRef = db.collection("users").doc(user.uid).collection("doneLists");
-      if(user) {
-        console.log(user.uid);
-        self.propsTitle = item.title;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          let self = this;
+          let colRef = db.collection("users").doc(user.uid).collection("doneLists");
+          if(user) {
+            console.log(user.uid);
+            self.propsTitle = item.title;
 
-        colRef.where("isbn", "==", item.isbn)
-        .get().then(function(querySnapshot) {
-          if(querySnapshot.empty) {
-            self.propsDoneFlag = true;
-            colRef.add({
-              imageUrl: item.largeImageUrl,
-              title: item.title,
-              author: item.author,
-              isbn: item.isbn,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(function(docRef) {
-              console.log("Document ID:", docRef.id, "successfully written!");
-              colRef.doc(docRef.id).update({
-                docId: docRef.id,
-              })
+            colRef.where("isbn", "==", item.isbn)
+            .get().then(function(querySnapshot) {
+              if(querySnapshot.empty) {
+                self.propsDoneFlag = true;
+                colRef.add({
+                  imageUrl: item.largeImageUrl,
+                  title: item.title,
+                  author: item.author,
+                  isbn: item.isbn,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(function(docRef) {
+                  console.log("Document ID:", docRef.id, "successfully written!");
+                  colRef.doc(docRef.id).update({
+                    docId: docRef.id,
+                  })
+                })
+                .catch(function(error) {
+                  console.log("Error writing document: ", error);
+                });
+              } else {
+                self.propsDoneFlag = false;
+                console.log("Document can't written!");
+              }
             })
             .catch(function(error) {
-              console.log("Error writing document: ", error);
+              console.log("Error getting documents: ", error);
             });
-          } else {
-            self.propsDoneFlag = false;
-            console.log("Document can't written!");
           }
-        })
-        .catch(function(error) {
-          console.log("Error getting documents: ", error);
-        });
-      } else {
-        alert("サインインしてください");
-      }
+        }
+      });
     },
   },
 
