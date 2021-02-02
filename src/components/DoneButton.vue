@@ -10,7 +10,8 @@
   </v-container>
 </template>
 
-<script lang="js">
+<script>
+import firebase from 'firebase';
 
 export default {
   name: "DoneButton",
@@ -27,8 +28,14 @@ export default {
 
   methods: {
     async addDoneList(){
-      this.$emit('done-button');
-      return this.doneDialog = true;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          this.$emit('done-button');
+          return this.doneDialog = true;
+        } else {
+          alert("サインインしてください");
+        }
+      });
     }
   },
 }
