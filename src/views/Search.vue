@@ -109,13 +109,13 @@ export default {
 
     // 読みたい本のリストに追加
     async clickWishButton(item) {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           let self = this;
           let colRef = db.collection("users").doc(user.uid).collection("wishLists");
           if(user) {
             console.log(user.uid);
-            self.propsTitle = item.title;
+            this.propsTitle = item.title;
 
             colRef.where("isbn", "==", item.isbn)
             .get().then(function(querySnapshot) {

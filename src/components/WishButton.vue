@@ -28,7 +28,7 @@ export default {
 
   methods: {
     async addWishList() {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged((user) => {
         if(user) {
           this.$emit('wish-button');
           return this.wishDialog = true;
