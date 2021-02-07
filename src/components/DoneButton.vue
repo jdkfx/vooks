@@ -28,7 +28,7 @@ export default {
 
   methods: {
     async addDoneList(){
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           this.$emit('done-button');
           return this.doneDialog = true;
