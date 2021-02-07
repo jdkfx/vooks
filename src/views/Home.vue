@@ -19,7 +19,7 @@
               <p>著者：{{ item.author }}</p>
               <p>{{ item.itemCaption }}</p>
               <p>ISBN：{{ item.isbn }}</p>
-              <p>{{ item.timestamp.toDate() }}に追加</p>
+              <p>{{ item.addedAt }}に追加</p>
             </ul>
           </div>
 

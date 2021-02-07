@@ -53,6 +53,7 @@ import firebase from 'firebase';
 import WishButton from "../components/WishButton";
 import DoneButton from "../components/DoneButton";
 import { db } from '../plugins/firebase';
+import moment from 'moment';
 
 const baseURL = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=${process.env.VUE_APP_RAKUTEN_API_APP_ID}`;
 
@@ -126,6 +127,7 @@ export default {
                   title: item.title,
                   author: item.author,
                   isbn: item.isbn,
+                  addedAt: moment(new Date).format('YYYY/MM/DD'),
                   timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 })
                 .then(function(docRef) {
@@ -169,6 +171,7 @@ export default {
                   title: item.title,
                   author: item.author,
                   isbn: item.isbn,
+                  addedAt: moment(new Date).format('YYYY/MM/DD'),
                   timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 })
                 .then(function(docRef) {
