@@ -20,6 +20,12 @@
               <p>{{ item.itemCaption }}</p>
               <p>ISBN：{{ item.isbn }}</p>
               <p>{{ item.addedAt }}に追加</p>
+
+              <done-button
+                v-on:done-button="clickDoneButton(item)"
+                v-bind:toPropsTitle="item.title"
+                v-bind:toPropsDoneFlag="propsDoneFlag"
+              ></done-button>
             </ul>
           </div>
 
@@ -32,19 +38,21 @@
 
 <script>
 import firebase from 'firebase';
-// import DoneButton from "../components/DoneButton";
+import DoneButton from "../components/DoneButton";
 import { db } from '../plugins/firebase';
+import moment from 'moment';
 
 export default {
   name: "Home",
 
   components: {
-    // "done-button": DoneButton,
+    "done-button": DoneButton,
   },
 
   data() {
     return {
       items: [],
+      propsDoneFlag: '',
     }
   },
 
@@ -69,6 +77,50 @@ export default {
           });          
         } else {
           alert("サインインしてください");
+        }
+      });
+    },
+
+    // 読了した本のリストに追加
+    async clickDoneButton(item) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          let self = this;
+          let colRef = db.collection("users").doc(user.uid).collection("doneLists");
+          if(user) {
+            console.log(user.uid);
+            this.propsTitle = item.title;
+
+            colRef.where("isbn", "==", item.isbn)
+            .get().then(function(querySnapshot) {
+              if(querySnapshot.empty) {
+                self.propsDoneFlag = true;
+                colRef.add({
+                  imageUrl: item.imageUrl,
+                  title: item.title,
+                  author: item.author,
+                  isbn: item.isbn,
+                  addedAt: moment(new Date).format('YYYY/MM/DD'),
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(function(docRef) {
+                  console.log("Document ID:", docRef.id, "successfully written!");
+                  colRef.doc(docRef.id).update({
+                    docId: docRef.id,
+                  })
+                })
+                .catch(function(error) {
+                  console.log("Error writing document: ", error);
+                });
+              } else {
+                self.propsDoneFlag = false;
+                console.log("Document can't written!");
+              }
+            })
+            .catch(function(error) {
+              console.log("Error getting documents: ", error);
+            });
+          }
         }
       });
     },
