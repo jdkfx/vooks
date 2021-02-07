@@ -154,13 +154,13 @@ export default {
 
     // 読了した本のリストに追加
     async clickDoneButton(item) {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           let self = this;
           let colRef = db.collection("users").doc(user.uid).collection("doneLists");
           if(user) {
             console.log(user.uid);
-            self.propsTitle = item.title;
+            this.propsTitle = item.title;
 
             colRef.where("isbn", "==", item.isbn)
             .get().then(function(querySnapshot) {
