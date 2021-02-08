@@ -62,8 +62,8 @@ export default {
       let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
-          wishColRef.get().then(function(querySnapshot) {
+          let colRef = db.collection("users").doc(user.uid).collection("wishLists");
+          colRef.get().then(function(querySnapshot) {
             if(querySnapshot.empty){
               console.log("Document data not exist!");
             } else {
@@ -86,17 +86,16 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           let self = this;
-          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
+          let colRef = db.collection("users").doc(user.uid).collection("doneLists");
           if(user) {
             console.log(user.uid);
             this.propsTitle = item.title;
 
-            doneColRef.where("isbn", "==", item.isbn)
+            colRef.where("isbn", "==", item.isbn)
             .get().then(function(querySnapshot) {
               if(querySnapshot.empty) {
                 self.propsDoneFlag = true;
-                doneColRef.add({
+                colRef.add({
                   imageUrl: item.imageUrl,
                   title: item.title,
                   author: item.author,
@@ -106,25 +105,9 @@ export default {
                 })
                 .then(function(docRef) {
                   console.log("Document ID:", docRef.id, "successfully written!");
-                  doneColRef.doc(docRef.id).update({
+                  colRef.doc(docRef.id).update({
                     docId: docRef.id,
-                  });
-                  
-                  // ホーム画面に表示された本が読了リストに追加されると読みたいリストの同じ本にdoneFlagが追加される
-                  wishColRef.where("isbn", "==", item.isbn)
-                  .get()
-                  .then(snapshot => {
-                    snapshot.forEach(doc => {
-                      
-                      wishColRef.doc(doc.id)
-                      .update({
-                        doneFlag: true,
-                      });
-                      console.log("The wishlist(ID:", doc.id, ") update is completed");
-
-                    });
-                  });
-
+                  })
                 })
                 .catch(function(error) {
                   console.log("Error writing document: ", error);

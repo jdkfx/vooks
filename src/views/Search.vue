@@ -113,16 +113,16 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           let self = this;
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
+          let colRef = db.collection("users").doc(user.uid).collection("wishLists");
           if(user) {
             console.log(user.uid);
             this.propsTitle = item.title;
 
-            wishColRef.where("isbn", "==", item.isbn)
+            colRef.where("isbn", "==", item.isbn)
             .get().then(function(querySnapshot) {
               if(querySnapshot.empty) {
                 self.propsWishFlag = true;
-                wishColRef.add({
+                colRef.add({
                   imageUrl: item.largeImageUrl,
                   title: item.title,
                   author: item.author,
@@ -132,7 +132,7 @@ export default {
                 })
                 .then(function(docRef) {
                   console.log("Document ID:", docRef.id, "successfully written!");
-                  wishColRef.doc(docRef.id).update({
+                  colRef.doc(docRef.id).update({
                     docId: docRef.id,
                   })
                 })
@@ -157,17 +157,16 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           let self = this;
-          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
+          let colRef = db.collection("users").doc(user.uid).collection("doneLists");
           if(user) {
             console.log(user.uid);
             this.propsTitle = item.title;
 
-            doneColRef.where("isbn", "==", item.isbn)
+            colRef.where("isbn", "==", item.isbn)
             .get().then(function(querySnapshot) {
               if(querySnapshot.empty) {
                 self.propsDoneFlag = true;
-                doneColRef.add({
+                colRef.add({
                   imageUrl: item.largeImageUrl,
                   title: item.title,
                   author: item.author,
@@ -177,24 +176,9 @@ export default {
                 })
                 .then(function(docRef) {
                   console.log("Document ID:", docRef.id, "successfully written!");
-                  doneColRef.doc(docRef.id).update({
+                  colRef.doc(docRef.id).update({
                     docId: docRef.id,
-                  });
-
-                  wishColRef.where("isbn", "==", item.isbn)
-                  .get()
-                  .then(snapshot => {
-                    snapshot.forEach(doc => {
-                      
-                      wishColRef.doc(doc.id)
-                      .update({
-                        doneFlag: true,
-                      });
-                      console.log("The wishlist(ID:", doc.id, ") update is completed");
-
-                    });
-                  });
-
+                  })
                 })
                 .catch(function(error) {
                   console.log("Error writing document: ", error);
