@@ -21,25 +21,26 @@
 
         <div v-if="items !== null">
           <ul v-for="item in items" v-bind:key="item.id">
-            <img v-bind:src=item.Item.largeImageUrl />
-            <p>タイトル：{{ item.Item.title }}</p>
-            <p>著者：{{ item.Item.author }}</p>
-            <p>{{ item.Item.itemCaption }}</p>
-            <p>ISBN：{{ item.Item.isbn }}</p>
-            <p>出版社：{{ item.Item.publisherName }}</p>
+            <li style="list-style: none;">
+              <img v-bind:src=item.Item.largeImageUrl />
+              <p>タイトル：{{ item.Item.title }}</p>
+              <p>著者：{{ item.Item.author }}</p>
+              <p>{{ item.Item.itemCaption }}</p>
+              <p>ISBN：{{ item.Item.isbn }}</p>
+              <p>出版社：{{ item.Item.publisherName }}</p>
 
-            <wish-button
-              v-on:wish-button="clickWishButton(item.Item)"
-              v-bind:toPropsTitle="item.Item.title"
-              v-bind:toPropsWishFlag="propsWishFlag"
-            ></wish-button>
+              <wish-button
+                v-on:wish-button="clickWishButton(item.Item)"
+                v-bind:toPropsTitle="item.Item.title"
+                v-bind:toPropsWishFlag="propsWishFlag"
+              ></wish-button>
 
-            <done-button
-              v-on:done-button="clickDoneButton(item.Item)"
-              v-bind:toPropsTitle="item.Item.title"
-              v-bind:toPropsDoneFlag="propsDoneFlag"
-            ></done-button>
-
+              <done-button
+                v-on:done-button="clickDoneButton(item.Item)"
+                v-bind:toPropsTitle="item.Item.title"
+                v-bind:toPropsDoneFlag="propsDoneFlag"
+              ></done-button>
+            </li>
           </ul>
         </div>
 
