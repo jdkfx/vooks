@@ -14,18 +14,20 @@
 
           <div v-if="items !== null">
             <ul v-for="item in items" v-bind:key="item.id">
-              <img v-bind:src=item.imageUrl />
-              <p>タイトル：{{ item.title }}</p>
-              <p>著者：{{ item.author }}</p>
-              <p>{{ item.itemCaption }}</p>
-              <p>ISBN：{{ item.isbn }}</p>
-              <p>{{ item.addedAt }}に追加</p>
+              <li style="list-style: none;">
+                <img v-bind:src=item.imageUrl />
+                <p>タイトル：{{ item.title }}</p>
+                <p>著者：{{ item.author }}</p>
+                <p>{{ item.itemCaption }}</p>
+                <p>ISBN：{{ item.isbn }}</p>
+                <p>{{ item.addedAt }}に追加</p>
 
-              <done-button
-                v-on:done-button="clickDoneButton(item)"
-                v-bind:toPropsTitle="item.title"
-                v-bind:toPropsDoneFlag="propsDoneFlag"
-              ></done-button>
+                <done-button
+                  v-on:done-button="clickDoneButton(item)"
+                  v-bind:toPropsTitle="item.title"
+                  v-bind:toPropsDoneFlag="propsDoneFlag"
+                ></done-button>
+              </li>
             </ul>
           </div>
 
@@ -67,10 +69,12 @@ export default {
             if(querySnapshot.empty){
               console.log("Document data not exist!");
             } else {
+              console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
               querySnapshot.forEach(function(doc) {
-                console.log("Document data:", doc.id, " => ", doc.data());
+                if(doc.data().doneFlag != true){
+                  self.items.push(doc.data());
+                }
               });
-              self.items = querySnapshot.docs.map(doc => doc.data());
             }
           }).catch(function(error) {
             console.log("Error getting document:", error);
@@ -121,6 +125,7 @@ export default {
                         doneFlag: true,
                       });
                       console.log("The wishlist(ID:", doc.id, ") update is completed");
+                      window.location.reload();
 
                     });
                   });
