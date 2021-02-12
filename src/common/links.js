@@ -9,6 +9,10 @@ export default {
       url: '/wish',
     },
     {
+      name: '読了リスト',
+      url: '/done',
+    },
+    {
       name: '検索',
       url: '/search',
     },

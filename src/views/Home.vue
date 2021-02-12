@@ -12,19 +12,19 @@
             <h2>読みたい本のリスト</h2>
           </div>
 
-          <div v-if="items !== null">
-            <ul v-for="item of limitCount" v-bind:key="item.id">
+          <div v-if="wishItems !== null">
+            <ul v-for="wishItem of limitWishItemsCount" v-bind:key="wishItem.id">
               <li style="list-style: none;">
-                <img v-bind:src=item.imageUrl />
-                <p>タイトル：{{ item.title }}</p>
-                <p>著者：{{ item.author }}</p>
-                <p>{{ item.itemCaption }}</p>
-                <p>ISBN：{{ item.isbn }}</p>
-                <p>{{ item.addedAt }}に追加</p>
+                <img v-bind:src=wishItem.imageUrl />
+                <p>タイトル：{{ wishItem.title }}</p>
+                <p>著者：{{ wishItem.author }}</p>
+                <p>{{ wishItem.itemCaption }}</p>
+                <p>ISBN：{{ wishItem.isbn }}</p>
+                <p>{{ wishItem.addedAt }}に追加</p>
 
                 <done-button
-                  v-on:done-button="clickDoneButton(item)"
-                  v-bind:toPropsTitle="item.title"
+                  v-on:done-button="clickDoneButton(wishItem)"
+                  v-bind:toPropsTitle="wishItem.title"
                   v-bind:toPropsDoneFlag="propsDoneFlag"
                 ></done-button>
               </li>
@@ -33,6 +33,27 @@
 
           <div>
             <v-btn color="blue" href="/wish" rounded>リストを見る</v-btn>
+          </div>
+
+          <div>
+            <h2>読了した本のリスト</h2>
+          </div>
+
+          <div v-if="doneItems !== null">
+            <ul v-for="doneItem of limitDoneItemsCount" v-bind:key="doneItem.id">
+              <li style="list-style: none;">
+                <img v-bind:src=doneItem.imageUrl />
+                <p>タイトル：{{ doneItem.title }}</p>
+                <p>著者：{{ doneItem.author }}</p>
+                <p>{{ doneItem.itemCaption }}</p>
+                <p>ISBN：{{ doneItem.isbn }}</p>
+                <p>{{ doneItem.addedAt }}に追加</p>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <v-btn color="blue" href="/done" rounded>リストを見る</v-btn>
           </div>
 
         </v-col>
@@ -57,14 +78,15 @@ export default {
 
   data() {
     return {
-      items: [],
+      wishItems: [],
+      doneItems: [],
       propsDoneFlag: '',
     }
   },
 
   methods: {
-    // CloudFirestoreに格納された情報を表示する
-    async showLists() {
+    // CloudFirestoreに格納されたwishListsの情報を表示する
+    async showWishLists() {
       let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -76,8 +98,32 @@ export default {
               console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
               querySnapshot.forEach(function(doc) {
                 if(doc.data().doneFlag != true){
-                  self.items.push(doc.data());
+                  self.wishItems.push(doc.data());
                 }
+              });
+            }
+          }).catch(function(error) {
+            console.log("Error getting document:", error);
+          });          
+        } else {
+          alert("サインインしてください");
+        }
+      });
+    },
+
+    // CloudFirestoreに格納されたdoneListsの情報を表示する
+    async showDoneLists() {
+      let self = this;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
+          doneColRef.get().then(function(querySnapshot) {
+            if(querySnapshot.empty){
+              console.log("Document data not exist!");
+            } else {
+              console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
+              querySnapshot.forEach(function(doc) {
+                self.doneItems.push(doc.data());
               });
             }
           }).catch(function(error) {
@@ -153,12 +199,16 @@ export default {
   },
 
   created: function() {
-    this.showLists();
+    this.showWishLists();
+    this.showDoneLists();
   },
 
   computed: {
-    limitCount() {
-      return this.items.slice(0,3);
+    limitWishItemsCount() {
+      return this.wishItems.slice(0,3);
+    },
+    limitDoneItemsCount() {
+      return this.doneItems.slice(0,3);
     }
   }
 };

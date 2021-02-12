@@ -12,19 +12,19 @@
             <h2>読みたい本のリスト</h2>
           </div>
 
-          <div v-if="items !== null">
-            <ul v-for="item in items" v-bind:key="item.id">
+          <div v-if="wishItems !== null">
+            <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id">
               <li style="list-style: none;">
-                <img v-bind:src=item.imageUrl />
-                <p>タイトル：{{ item.title }}</p>
-                <p>著者：{{ item.author }}</p>
-                <p>{{ item.itemCaption }}</p>
-                <p>ISBN：{{ item.isbn }}</p>
-                <p>{{ item.addedAt }}に追加</p>
+                <img v-bind:src=wishItem.imageUrl />
+                <p>タイトル：{{ wishItem.title }}</p>
+                <p>著者：{{ wishItem.author }}</p>
+                <p>{{ wishItem.itemCaption }}</p>
+                <p>ISBN：{{ wishItem.isbn }}</p>
+                <p>{{ wishItem.addedAt }}に追加</p>
 
                 <done-button
-                  v-on:done-button="clickDoneButton(item)"
-                  v-bind:toPropsTitle="item.title"
+                  v-on:done-button="clickDoneButton(wishItem)"
+                  v-bind:toPropsTitle="wishItem.title"
                   v-bind:toPropsDoneFlag="propsDoneFlag"
                 ></done-button>
               </li>
@@ -53,14 +53,14 @@ export default {
 
   data() {
     return {
-      items: [],
+      wishItems: [],
       propsDoneFlag: '',
     }
   },
 
   methods: {
-    // CloudFirestoreに格納された情報を表示する
-    async showLists() {
+    // CloudFirestoreに格納されたwishListsの情報を表示する
+    async showWishLists() {
       let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -72,7 +72,7 @@ export default {
               console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
               querySnapshot.forEach(function(doc) {
                 if(doc.data().doneFlag != true){
-                  self.items.push(doc.data());
+                  self.wishItems.push(doc.data());
                 }
               });
             }
@@ -149,7 +149,7 @@ export default {
   },
 
   created: function() {
-    this.showLists();
+    this.showWishLists();
   }
 };
 
