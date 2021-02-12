@@ -13,7 +13,7 @@
           </div>
 
           <div v-if="items !== null">
-            <ul v-for="item of limitCount" v-bind:key="item.id">
+            <ul v-for="item in items" v-bind:key="item.id">
               <li style="list-style: none;">
                 <img v-bind:src=item.imageUrl />
                 <p>タイトル：{{ item.title }}</p>
@@ -29,10 +29,6 @@
                 ></done-button>
               </li>
             </ul>
-          </div>
-
-          <div>
-            <v-btn color="blue" href="/wish" rounded>リストを見る</v-btn>
           </div>
 
         </v-col>
@@ -154,12 +150,6 @@ export default {
 
   created: function() {
     this.showLists();
-  },
-
-  computed: {
-    limitCount() {
-      return this.items.slice(0,3);
-    }
   }
 };
 
