@@ -13,7 +13,7 @@
           </div>
 
           <div v-if="wishItems !== null">
-            <ul v-for="wishItem of limitWishItemsCount" v-bind:key="wishItem.id">
+            <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id">
               <li style="list-style: none;">
                 <img v-bind:src=wishItem.imageUrl />
                 <p>タイトル：{{ wishItem.title }}</p>
@@ -29,31 +29,6 @@
                 ></done-button>
               </li>
             </ul>
-          </div>
-
-          <div>
-            <v-btn color="blue" href="/wish" rounded>リストを見る</v-btn>
-          </div>
-
-          <div>
-            <h2>読了した本のリスト</h2>
-          </div>
-
-          <div v-if="doneItems !== null">
-            <ul v-for="doneItem of limitDoneItemsCount" v-bind:key="doneItem.id">
-              <li style="list-style: none;">
-                <img v-bind:src=doneItem.imageUrl />
-                <p>タイトル：{{ doneItem.title }}</p>
-                <p>著者：{{ doneItem.author }}</p>
-                <p>{{ doneItem.itemCaption }}</p>
-                <p>ISBN：{{ doneItem.isbn }}</p>
-                <p>{{ doneItem.addedAt }}に追加</p>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <v-btn color="blue" href="/done" rounded>リストを見る</v-btn>
           </div>
 
         </v-col>
@@ -79,7 +54,6 @@ export default {
   data() {
     return {
       wishItems: [],
-      doneItems: [],
       propsDoneFlag: '',
     }
   },
@@ -100,30 +74,6 @@ export default {
                 if(doc.data().doneFlag != true){
                   self.wishItems.push(doc.data());
                 }
-              });
-            }
-          }).catch(function(error) {
-            console.log("Error getting document:", error);
-          });          
-        } else {
-          alert("サインインしてください");
-        }
-      });
-    },
-
-    // CloudFirestoreに格納されたdoneListsの情報を表示する
-    async showDoneLists() {
-      let self = this;
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
-          doneColRef.get().then(function(querySnapshot) {
-            if(querySnapshot.empty){
-              console.log("Document data not exist!");
-            } else {
-              console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
-              querySnapshot.forEach(function(doc) {
-                self.doneItems.push(doc.data());
               });
             }
           }).catch(function(error) {
@@ -200,16 +150,6 @@ export default {
 
   created: function() {
     this.showWishLists();
-    this.showDoneLists();
-  },
-
-  computed: {
-    limitWishItemsCount() {
-      return this.wishItems.slice(0,3);
-    },
-    limitDoneItemsCount() {
-      return this.doneItems.slice(0,3);
-    }
   }
 };
 

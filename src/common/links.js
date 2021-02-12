@@ -5,6 +5,14 @@ export default {
       url: '/',
     },
     {
+      name: '読みたいリスト',
+      url: '/wish',
+    },
+    {
+      name: '読了リスト',
+      url: '/done',
+    },
+    {
       name: '検索',
       url: '/search',
     },
