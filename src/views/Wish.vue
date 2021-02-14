@@ -27,6 +27,13 @@
                   v-bind:toPropsTitle="wishItem.title"
                   v-bind:toPropsDoneFlag="propsDoneFlag"
                 ></done-button>
+
+                <delete-button
+                  v-on:delete-button="clickDeleteButton(wishItem)"
+                  v-bind:toPropsTitle="wishItem.title"
+                  v-bind:toPropsDoneFlag="propsDoneFlag"
+                ></delete-button>
+
               </li>
             </ul>
           </div>
@@ -41,6 +48,7 @@
 <script>
 import firebase from 'firebase';
 import DoneButton from "../components/DoneButton";
+import DeleteButton from "../components/DeleteButton";
 import { db } from '../plugins/firebase';
 import moment from 'moment';
 
@@ -49,6 +57,7 @@ export default {
 
   components: {
     "done-button": DoneButton,
+    "delete-button": DeleteButton,
   },
 
   data() {
@@ -141,6 +150,38 @@ export default {
             })
             .catch(function(error) {
               console.log("Error getting documents: ", error);
+            });
+          }
+        }
+      });
+    },
+
+    // リストから削除
+    async clickDeleteButton(item) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
+          if(user) {
+            console.log(user.uid);
+            this.propsTitle = item.title;
+
+            wishColRef.where("isbn", "==", item.isbn)
+            .get()
+            .then(snapshot => {
+              snapshot.forEach(doc => {
+                
+                wishColRef.doc(doc.id)
+                .delete()
+                .then(function () {
+                  console.log("Document successfully deleted!");
+                })
+                .then(function () {
+                  window.location.reload();
+                });
+              });
+            })
+            .catch(function(error) {
+              console.log("Error removing document: ", error);
             });
           }
         }
