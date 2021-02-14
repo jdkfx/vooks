@@ -21,6 +21,12 @@
                 <p>{{ doneItem.itemCaption }}</p>
                 <p>ISBN：{{ doneItem.isbn }}</p>
                 <p>{{ doneItem.addedAt }}に追加</p>
+
+                <delete-button
+                  v-on:delete-button="clickDeleteButton(doneItem)"
+                  v-bind:toPropsTitle="doneItem.title"
+                  v-bind:toPropsDoneFlag="propsDoneFlag"
+                ></delete-button>
               </li>
             </ul>
           </div>
@@ -35,9 +41,14 @@
 <script>
 import firebase from 'firebase';
 import { db } from '../plugins/firebase';
+import DeleteButton from "../components/DeleteButton";
 
 export default {
   name: "Home",
+
+  components: {
+    "delete-button": DeleteButton
+  },
 
   data() {
     return {
@@ -94,6 +105,38 @@ export default {
           });          
         } else {
           alert("サインインしてください");
+        }
+      });
+    },
+
+    // リストから削除
+    async clickDeleteButton(item) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
+          if(user) {
+            console.log(user.uid);
+            this.propsTitle = item.title;
+
+            doneColRef.where("isbn", "==", item.isbn)
+            .get()
+            .then(snapshot => {
+              snapshot.forEach(doc => {
+                
+                doneColRef.doc(doc.id)
+                .delete()
+                .then(function () {
+                  console.log("Document successfully deleted!");
+                })
+                .then(function () {
+                  window.location.reload();
+                });
+              });
+            })
+            .catch(function(error) {
+              console.log("Error removing document: ", error);
+            });
+          }
         }
       });
     },
