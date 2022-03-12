@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "vooks-4f56b"
-  }
+    "default": "vooks-4f56b",
+    "dev": "vooks-project-dev"
+  },
+  "targets": {}
 }
