@@ -73,7 +73,7 @@ export default {
       let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
+          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists").orderBy("timestamp", "desc");
           wishColRef.get().then(function(querySnapshot) {
             if(querySnapshot.empty){
               console.log("Document data not exist!");

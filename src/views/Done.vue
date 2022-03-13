@@ -59,38 +59,12 @@ export default {
   },
 
   methods: {
-    // CloudFirestoreに格納されたwishListsの情報を表示する
-    async showWishLists() {
-      let self = this;
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          let wishColRef = db.collection("users").doc(user.uid).collection("wishLists");
-          wishColRef.get().then(function(querySnapshot) {
-            if(querySnapshot.empty){
-              console.log("Document data not exist!");
-            } else {
-              console.log("Document data:", querySnapshot.docs.map(doc => doc.data()));
-              querySnapshot.forEach(function(doc) {
-                if(doc.data().doneFlag != true){
-                  self.wishItems.push(doc.data());
-                }
-              });
-            }
-          }).catch(function(error) {
-            console.log("Error getting document:", error);
-          });          
-        } else {
-          alert("サインインしてください");
-        }
-      });
-    },
-
     // CloudFirestoreに格納されたdoneListsの情報を表示する
     async showDoneLists() {
       let self = this;
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists");
+          let doneColRef = db.collection("users").doc(user.uid).collection("doneLists").orderBy("timestamp", "desc");
           doneColRef.get().then(function(querySnapshot) {
             if(querySnapshot.empty){
               console.log("Document data not exist!");
