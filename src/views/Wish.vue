@@ -1,44 +1,42 @@
 <template>
   <v-container>
+    <div justify="center" class="text-center">
+      <div>
+        <h1>ホーム</h1>
+      </div>
+
+      <div>
+        <h2>読みたい本のリスト</h2>
+      </div>
+    </div>
+
     <div>
-      <v-row justify="center" class="text-center">
-        <v-col>
-          
-          <div>
-            <h1>ホーム</h1>
-          </div>
+      <v-row v-if="wishItems !== null">
+        <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id">
+          <v-col cols="12">
+            <li class="text-center" style="list-style: none;">
+              <img v-bind:src=wishItem.imageUrl />
+              <p>タイトル：{{ wishItem.title }}</p>
+              <p>著者：{{ wishItem.author }}</p>
+              <p>{{ wishItem.itemCaption }}</p>
+              <p>ISBN：{{ wishItem.isbn }}</p>
+              <p>{{ wishItem.addedAt }}に追加</p>
 
-          <div>
-            <h2>読みたい本のリスト</h2>
-          </div>
+              <done-button
+                v-on:done-button="clickDoneButton(wishItem)"
+                v-bind:toPropsTitle="wishItem.title"
+                v-bind:toPropsDoneFlag="propsDoneFlag"
+              ></done-button>
 
-          <div v-if="wishItems !== null">
-            <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id">
-              <li style="list-style: none;">
-                <img v-bind:src=wishItem.imageUrl />
-                <p>タイトル：{{ wishItem.title }}</p>
-                <p>著者：{{ wishItem.author }}</p>
-                <p>{{ wishItem.itemCaption }}</p>
-                <p>ISBN：{{ wishItem.isbn }}</p>
-                <p>{{ wishItem.addedAt }}に追加</p>
-
-                <done-button
-                  v-on:done-button="clickDoneButton(wishItem)"
-                  v-bind:toPropsTitle="wishItem.title"
-                  v-bind:toPropsDoneFlag="propsDoneFlag"
-                ></done-button>
-
-                <delete-button
-                  v-on:delete-button="clickDeleteButton(wishItem)"
-                  v-bind:toPropsTitle="wishItem.title"
-                  v-bind:toPropsDoneFlag="propsDoneFlag"
-                ></delete-button>
-
-              </li>
-            </ul>
-          </div>
-
-        </v-col>
+              <delete-button
+                v-on:delete-button="clickDeleteButton(wishItem)"
+                v-bind:toPropsTitle="wishItem.title"
+                v-bind:toPropsDoneFlag="propsDoneFlag"
+              ></delete-button>
+            
+            </li>
+          </v-col>
+        </ul>
       </v-row>
     </div>
   </v-container>
