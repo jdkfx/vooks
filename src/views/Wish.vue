@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <div justify="center" class="text-center">
+  <v-container class="text-center">
+    <div>
       <div>
         <h1>ホーム</h1>
       </div>
@@ -11,15 +11,11 @@
     </div>
 
     <div>
-      <v-row v-if="wishItems !== null">
-        <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id">
-          <v-col cols="12">
-            <li class="text-center" style="list-style: none;">
+      <v-row v-if="wishItems !== null" justify="center">
+        <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id" style="padding: 0;">
+          <v-col>
+            <li style="list-style: none;">
               <img v-bind:src=wishItem.imageUrl />
-              <p>タイトル：{{ wishItem.title }}</p>
-              <p>著者：{{ wishItem.author }}</p>
-              <p>{{ wishItem.itemCaption }}</p>
-              <p>ISBN：{{ wishItem.isbn }}</p>
               <p>{{ wishItem.addedAt }}に追加</p>
 
               <done-button
