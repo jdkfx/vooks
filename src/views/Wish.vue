@@ -1,13 +1,7 @@
 <template>
   <v-container class="text-center">
-    <div>
-      <div>
-        <h1>ホーム</h1>
-      </div>
-
-      <div>
-        <h2>読みたい本のリスト</h2>
-      </div>
+    <div class="mb-10">
+      <h2>読みたい本のリスト</h2>
     </div>
 
     <div>
@@ -15,7 +9,7 @@
         <ul v-for="wishItem in wishItems" v-bind:key="wishItem.id" style="padding: 0;">
           <v-col>
             <li style="list-style: none;">
-              <img v-bind:src=wishItem.imageUrl />
+              <img style="width: 100%;" v-bind:src=wishItem.imageUrl />
               <p>{{ wishItem.addedAt }}に追加</p>
 
               <done-button
