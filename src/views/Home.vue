@@ -1,62 +1,40 @@
 <template>
-  <v-container>
+  <v-container class="text-center">
+    <div class="mb-5">
+      <h1>ホーム</h1>
+    </div>
+
+    <div class="mb-10">
+      <h2>読みたい本のリスト</h2>
+    </div>
+    
+    <div class="mb-10">
+      <v-row justify="center">
+        <ul v-for="wishItem of wishItems" v-bind:key="wishItem.id" style="padding: 0;">
+          <v-col>
+            <li style="list-style: none;">
+              <img style="width: 100%;" v-bind:src=wishItem.imageUrl />
+              <p>{{ wishItem.addedAt }}に追加</p>
+            </li>
+          </v-col>    
+        </ul>
+      </v-row>
+    </div>
+
+    <div class="mb-10">
+      <h2>読了した本のリスト</h2>
+    </div>
+
     <div>
-      <v-row justify="center" class="text-center">
-        <v-col>
-          
-          <div>
-            <h1>ホーム</h1>
-          </div>
-
-          <div>
-            <h2>読みたい本のリスト</h2>
-          </div>
-
-          <div v-if="wishItems !== null">
-            <ul v-for="wishItem of limitWishItemsCount" v-bind:key="wishItem.id">
-              <li style="list-style: none;">
-                <img v-bind:src=wishItem.imageUrl />
-                <p>タイトル：{{ wishItem.title }}</p>
-                <p>著者：{{ wishItem.author }}</p>
-                <p>{{ wishItem.itemCaption }}</p>
-                <p>ISBN：{{ wishItem.isbn }}</p>
-                <p>{{ wishItem.addedAt }}に追加</p>
-
-                <done-button
-                  v-on:done-button="clickDoneButton(wishItem)"
-                  v-bind:toPropsTitle="wishItem.title"
-                  v-bind:toPropsDoneFlag="propsDoneFlag"
-                ></done-button>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <v-btn color="blue" href="/wish" rounded>リストを見る</v-btn>
-          </div>
-
-          <div>
-            <h2>読了した本のリスト</h2>
-          </div>
-
-          <div v-if="doneItems !== null">
-            <ul v-for="doneItem of limitDoneItemsCount" v-bind:key="doneItem.id">
-              <li style="list-style: none;">
-                <img v-bind:src=doneItem.imageUrl />
-                <p>タイトル：{{ doneItem.title }}</p>
-                <p>著者：{{ doneItem.author }}</p>
-                <p>{{ doneItem.itemCaption }}</p>
-                <p>ISBN：{{ doneItem.isbn }}</p>
-                <p>{{ doneItem.addedAt }}に追加</p>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <v-btn color="blue" href="/done" rounded>リストを見る</v-btn>
-          </div>
-
-        </v-col>
+      <v-row v-if="doneItems !== null" justify="center">
+        <ul v-for="doneItem of doneItems" v-bind:key="doneItem.id" style="padding: 0;">
+          <v-col>
+            <li style="list-style: none;">
+              <img style="width: 100%;" v-bind:src=doneItem.imageUrl />
+              <p>{{ doneItem.addedAt }}に追加</p>
+            </li>
+          </v-col>
+        </ul>
       </v-row>
     </div>
   </v-container>
@@ -65,16 +43,11 @@
 
 <script>
 import firebase from 'firebase';
-import DoneButton from "../components/DoneButton";
 import { db } from '../plugins/firebase';
 import moment from 'moment';
 
 export default {
   name: "Home",
-
-  components: {
-    "done-button": DoneButton,
-  },
 
   data() {
     return {
@@ -204,12 +177,12 @@ export default {
   },
 
   computed: {
-    limitWishItemsCount() {
-      return this.wishItems.slice(0,3);
-    },
-    limitDoneItemsCount() {
-      return this.doneItems.slice(0,3);
-    }
+    // limitWishItemsCount() {
+    //   return this.wishItems.slice(0,3);
+    // },
+    // limitDoneItemsCount() {
+    //   return this.doneItems.slice(0,3);
+    // }
   }
 };
 

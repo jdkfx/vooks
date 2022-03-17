@@ -1,37 +1,26 @@
 <template>
-  <v-container>
+  <v-container class="text-center">
+    <div class="mb-10">
+      <h2>読了した本のリスト</h2>
+    </div>
+
     <div>
-      <v-row justify="center" class="text-center">
-        <v-col>
-          
-          <div>
-            <h1>ホーム</h1>
-          </div>
+      <v-row v-if="doneItems !== null" justify="center">
+        <ul v-for="doneItem of doneItems" v-bind:key="doneItem.id" style="padding: 0;">
+          <v-col>
+            <li style="list-style: none;">
+              <img style="width: 100%;" v-bind:src=doneItem.imageUrl />
+              <p>{{ doneItem.addedAt }}に追加</p>
 
-          <div>
-            <h2>読了した本のリスト</h2>
-          </div>
-
-          <div v-if="doneItems !== null">
-            <ul v-for="doneItem of doneItems" v-bind:key="doneItem.id">
-              <li style="list-style: none;">
-                <img v-bind:src=doneItem.imageUrl />
-                <p>タイトル：{{ doneItem.title }}</p>
-                <p>著者：{{ doneItem.author }}</p>
-                <p>{{ doneItem.itemCaption }}</p>
-                <p>ISBN：{{ doneItem.isbn }}</p>
-                <p>{{ doneItem.addedAt }}に追加</p>
-
-                <delete-button
-                  v-on:delete-button="clickDeleteButton(doneItem)"
-                  v-bind:toPropsTitle="doneItem.title"
-                  v-bind:toPropsDoneFlag="propsDoneFlag"
-                ></delete-button>
-              </li>
-            </ul>
-          </div>
-
-        </v-col>
+              <delete-button
+                v-on:delete-button="clickDeleteButton(doneItem)"
+                v-bind:toPropsTitle="doneItem.title"
+                v-bind:toPropsDoneFlag="propsDoneFlag"
+              ></delete-button>
+            
+            </li>
+          </v-col>
+        </ul>
       </v-row>
     </div>
   </v-container>
